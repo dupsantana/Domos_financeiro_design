@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Registro de Artes - Domos Company</title>
+    <link rel="stylesheet" href="./src/css/styles.css" />
+    <link rel="stylesheet" href="./src/css/fonts.css" />
+</head>
+
+<body>
+    <header class="header">
+        <h1>Domos Company — Registro de Artes</h1>
+    </header>
+
+    <main class="container">
+       <div class="acoes-topo">
+            <button type="button" id="btnExportar" class="btn-exportar">
+                <img class="img" src="./src/icons/download_17783271.png" alt="">
+            </button>
+        </div>
+
+
+        <form id="registroForm" class="formulario">
+
+            <div class="campo">
+                <label>Data</label>
+                <input type="date" id="data" required />
+            </div>
+
+            <div class="campo">
+                <label>Cliente / Projeto</label>
+                <input type="text" id="cliente" placeholder="Ex: Projeto X" required />
+            </div>
+
+            <div class="campo">
+                <label>Tipo</label>
+                <select id="tipo" required>
+                    <option value="">Selecione...</option>
+                    <option value="Estático">Estático</option>
+                    <option value="Carrossel">Carrossel</option>
+                </select>
+            </div>
+
+            <div class="campo">
+                <label>Teve Alteração ?</label>
+                <select id="alteracao">
+                    <option value="0">Não</option>
+                    <option value="1">Sim</option>
+            </select>
+            </div>
+
+            <div class="campo">
+                <label>Tem formato extra?</label>
+                <select id="formatoExtra">
+                    <option value="Não">Não</option>
+                    <option value="Sim">Sim</option>
+                </select>
+            </div>
+
+            
+
+            <div class="campo campo-longo">
+                <label>Observações</label>
+                <textarea id="obs" placeholder="Digite observações adicionais"></textarea>
+            </div>
+
+            <button type="submit" class="btn">Adicionar Registro</button>
+
+        </form>
+
+        <h2 class="titulo-tabela">Registros</h2>
+
+        <table id="tabelaRegistros">
+            <thead>
+                <tr>
+                    <th>Data</th>
+                    <th>Cliente/Projeto</th>
+                    <th>Tipo</th>
+                    <th>Faixa</th>
+                    <th>Valor Unitário</th>
+                    <th>Alterações</th>
+                    <th>Formato Extra</th>
+                    <th>Observações</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- registros aparecem aqui -->
+            </tbody>
+        </table>
+
+    </main>
+
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<script src="app.js"></script>
+
+</body>
+</html>
