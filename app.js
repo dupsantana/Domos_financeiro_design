@@ -124,10 +124,14 @@ document.getElementById("registroForm").addEventListener("submit", function (e) 
 let totalAlteracoesCliente = alteracaoAtual;
 
 for (let i = 0; i < registrosSalvos.length; i++) {
-    if (registrosSalvos[i].cliente === cliente) {
+    if (
+        registrosSalvos[i].cliente === cliente &&
+        registrosSalvos[i].tipo === tipo
+    ) {
         totalAlteracoesCliente += registrosSalvos[i].alteracaoAtual || 0;
     }
 }
+
 
 
 
