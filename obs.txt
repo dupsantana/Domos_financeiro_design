@@ -1,0 +1,2 @@
+Adicionar uma forma de remover um registro por vez para facilitar para o usuário
+

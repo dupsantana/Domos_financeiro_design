@@ -7,6 +7,26 @@ function formatarDataBr(dataISO) {
 }
 
 
+// ===============================
+// LÓGICA DE SEPARAÇÃO DO NOME DO CLIENTE COM TIPO ESTÁTICO OU CARROSSEL
+// ===============================
+
+function buscarObservacoes(cliente, tipo) {
+    const registros = JSON.parse(localStorage.getItem("registrosArtes")) || [];
+
+    for (let i = registros.length - 1; i >= 0; i--) {
+        if (
+            registros[i].cliente === cliente &&
+            registros[i].tipo === tipo &&
+            registros[i].obs
+        ) {
+            return registros[i].obs;
+        }
+    }
+    return "";
+}
+
+
 
 // ===============================
 // BOTÃO QUE BAIXA A PLANILHA EM XLSX
@@ -80,16 +100,6 @@ function adicionarLinhaTabela(registro) {
 }
 
 
-function obterUltimaObservacao(cliente, registrosSalvos) {
-    for (let i = registrosSalvos.length - 1; i >= 0; i--) {
-        if (registrosSalvos[i].cliente === cliente && registrosSalvos[i].obs) {
-            return registrosSalvos[i].obs;
-        }
-    }
-    return "";
-}
-
-
 // ===============================
 // SALVAR REGISTRO
 // ===============================
@@ -139,8 +149,9 @@ for (let i = 0; i < registrosSalvos.length; i++) {
     let obs = document.getElementById("obs").value.trim();
 
 if (!obs) {
-    obs = obterUltimaObservacao(cliente, registrosSalvos);
+    obs = buscarObservacoes(cliente, tipo);
 }
+
 
 
     // Tratamento da data
@@ -253,15 +264,26 @@ if (!obs) {
 // ===============================
 carregarRegistros();
 
-document.getElementById("cliente").addEventListener("blur", function () {
-    const clienteDigitado = this.value.trim();
-    if (!clienteDigitado) return;
 
-    const registrosSalvos = JSON.parse(localStorage.getItem("registrosArtes")) || [];
-    const ultimaObs = obterUltimaObservacao(clienteDigitado, registrosSalvos);
 
-    if (ultimaObs) {
-        document.getElementById("obs").value = ultimaObs;
+const inputCliente = document.getElementById("cliente");
+const selectTipo = document.getElementById("tipo");
+const textareaObs = document.getElementById("obs");
+
+function atualizarObservacoes() {
+    const cliente = inputCliente.value.trim();
+    const tipo = selectTipo.value;
+
+    if (!cliente || !tipo) return;
+
+    const obsEncontrada = buscarObservacoes(cliente, tipo);
+
+    if (obsEncontrada) {
+        textareaObs.value = obsEncontrada;
     }
-});
+}
+
+inputCliente.addEventListener("blur", atualizarObservacoes);
+selectTipo.addEventListener("change", atualizarObservacoes);
+
 
