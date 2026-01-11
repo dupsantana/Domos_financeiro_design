@@ -1,2 +1,11 @@
 Adicionar uma forma de remover um registro por vez para facilitar para o usuário
 
+Adicionar filtros nas colunas
+
+Centralizar os cabeçalhos das colunas
+
+Adicionar contador de registros
+
+Adicionar contador de valor soma total de cada registro adicionado que vai 
+mudar junto com a faixa etc 
+

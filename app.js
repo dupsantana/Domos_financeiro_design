@@ -40,28 +40,42 @@ document.getElementById("btnExportar").addEventListener("click", function () {
         return;
     }
 
-    // Converter dados para formato de planilha
-    const dados = registros.map(r => ({
-        Data: r.data,
-        "Cliente/Projeto": r.cliente,
-        Tipo: r.tipo,
-        Faixa: r.faixa,
-        "Valor Unitário": r.valorUnitario,
-        Alterações: r.totalAlteracoesCliente,
-        "Formato Extra": r.formatoExtra,
-        Observações: r.obs || ""
-    }));
+    // Faixa GLOBAL (vale para todos)
+    const faixaAtual = calcularFaixa(registros.length);
 
-    // Criar worksheet e workbook
+    // Montar dados recalculados
+const dados = registros.map(registro => {
+    const totalAlteracoes = calcularTotalAlteracoes(
+        registro.cliente,
+        registro.tipo
+    );
+
+    const valor = calcularValor(
+        { ...registro, alteracoes: totalAlteracoes },
+        faixaAtual
+    );
+
+    return {
+        Data: registro.data,
+        "Cliente/Projeto": registro.cliente,
+        Tipo: registro.tipo,
+        Faixa: faixaAtual,
+        Valor: Number(valor.toFixed(2)),
+        Alterações: totalAlteracoes,
+        "Formato Extra": registro.formatoExtra,
+        Observações: registro.obs || ""
+    };
+});
+
+    // Criar planilha
     const worksheet = XLSX.utils.json_to_sheet(dados);
     const workbook = XLSX.utils.book_new();
-
     XLSX.utils.book_append_sheet(workbook, worksheet, "Registros");
 
-    // Nome do arquivo com data
     const hoje = new Date().toISOString().slice(0, 10);
     XLSX.writeFile(workbook, `registros_artes_${hoje}.xlsx`);
 });
+
 
 
 
@@ -70,34 +84,116 @@ document.getElementById("btnExportar").addEventListener("click", function () {
 // CARREGAR REGISTROS DO LOCALSTORAGE
 // ===============================
 function carregarRegistros() {
-    const registrosSalvos = JSON.parse(localStorage.getItem("registrosArtes")) || [];
+    const registros = JSON.parse(localStorage.getItem("registrosArtes")) || [];
+    const tbody = document.querySelector("#tabelaRegistros tbody");
+    tbody.innerHTML = "";
 
-    registrosSalvos.forEach(registro => {
-        adicionarLinhaTabela(registro);
+    registros.forEach((registro, index) => {
+        adicionarLinhaTabela(registro, index, registros.length);
     });
 }
+
 
 // ===============================
 // ADICIONAR LINHA NA TABELA
 // ===============================
-function adicionarLinhaTabela(registro) {
+function adicionarLinhaTabela(registro, indice, totalRegistros) {
     const tabela = document.querySelector("#tabelaRegistros tbody");
-
     const tr = document.createElement("tr");
+
+    const faixaAtual = calcularFaixa(totalRegistros);
+
+    const totalAlteracoes = calcularTotalAlteracoes(
+        registro.cliente,
+        registro.tipo
+    );
+
+    const valor = calcularValor(
+        { ...registro, alteracoes: totalAlteracoes },
+        faixaAtual
+    );
 
     tr.innerHTML = `
         <td>${registro.data}</td>
         <td>${registro.cliente}</td>
         <td>${registro.tipo}</td>
-        <td>${registro.faixa}</td>
-        <td>${registro.valorUnitario}</td> 
-        <td>${registro.totalAlteracoesCliente}</td>
+        <td>${faixaAtual}</td>
+        <td>R$ ${valor.toFixed(2)}</td>
+        <td>${totalAlteracoes}</td>
         <td>${registro.formatoExtra}</td>
         <td>${registro.obs}</td>
     `;
 
     tabela.appendChild(tr);
 }
+
+
+// REGRA DO PRIMEIRO PROJETO/CLIENTE NÃO PODE TER ALTERAÇÃO
+function isPrimeiroRegistro(cliente, tipo) {
+    const registros = JSON.parse(localStorage.getItem("registrosArtes")) || [];
+    return !registros.some(r => r.cliente === cliente && r.tipo === tipo);
+}
+
+function controlarCampoAlteracao() {
+    const cliente = inputCliente.value.trim();
+    const tipo = selectTipo.value;
+    const inputAlteracao = document.getElementById("alteracao");
+
+    if (!cliente || !tipo) {
+        inputAlteracao.value = 0;
+        inputAlteracao.disabled = true;
+        return;
+    }
+
+    if (isPrimeiroRegistro(cliente, tipo)) {
+        inputAlteracao.value = 0;
+        inputAlteracao.disabled = true;
+    } else {
+        inputAlteracao.disabled = false;
+    }
+}
+
+
+// ===============================
+// CONTROLE DO TEXTO DO CAMPO ALTERAÇÃO
+// ===============================
+
+function controlarCampoAlteracao() {
+    const cliente = inputCliente.value.trim();
+    const tipo = selectTipo.value;
+    const inputAlteracao = document.getElementById("alteracao");
+    const info = document.getElementById("alteracaoInfo");
+
+    if (!cliente || !tipo) {
+        inputAlteracao.value = 0;
+        inputAlteracao.disabled = true;
+        info.style.display = "none";
+        return;
+    }
+
+    if (isPrimeiroRegistro(cliente, tipo)) {
+        inputAlteracao.value = 0;
+        inputAlteracao.disabled = true;
+        info.style.display = "block";
+    } else {
+        inputAlteracao.disabled = false;
+        info.style.display = "none";
+    }
+}
+
+// ===============================
+// RESETAR CAMPO ALTERAÇÃO
+// ===============================
+function resetarCampoAlteracao() {
+    const inputAlteracao = document.getElementById("alteracao");
+    const info = document.getElementById("alteracaoInfo");
+
+    inputAlteracao.value = 0;
+    inputAlteracao.disabled = true;
+    info.style.display = "none";
+}
+
+
 
 
 // ===============================
@@ -110,6 +206,8 @@ function salvarRegistro(registro) {
     localStorage.setItem("registrosArtes", JSON.stringify(registrosSalvos));
 }
 
+
+
 // ===============================
 // FORM SUBMIT
 // ===============================
@@ -118,7 +216,6 @@ function salvarRegistro(registro) {
 document.getElementById("registroForm").addEventListener("submit", function (e) {
     e.preventDefault();
 
-    const registrosSalvos = JSON.parse(localStorage.getItem("registrosArtes")) || [];
 
     
 
@@ -126,21 +223,14 @@ document.getElementById("registroForm").addEventListener("submit", function (e) 
     const data = document.getElementById("data").value;
     const cliente = document.getElementById("cliente").value;
     const tipo = document.getElementById("tipo").value;
-    const alteracaoAtual = Number(document.getElementById("alteracao").value);
 
-// ===============================
-// SOMAR ALTERAÇÕES DO MESMO CLIENTE
-// ===============================
-let totalAlteracoesCliente = alteracaoAtual;
+// soma histórico + nova alteração
+let alteracaoAtual = Number(document.getElementById("alteracao").value);
 
-for (let i = 0; i < registrosSalvos.length; i++) {
-    if (
-        registrosSalvos[i].cliente === cliente &&
-        registrosSalvos[i].tipo === tipo
-    ) {
-        totalAlteracoesCliente += registrosSalvos[i].alteracaoAtual || 0;
-    }
+if (isPrimeiroRegistro(cliente, tipo)) {
+    alteracaoAtual = 0;
 }
+
 
 
 
@@ -157,70 +247,7 @@ if (!obs) {
     // Tratamento da data
     const dataFormatada = formatarDataBr(data);
 
-    //AQUI VÃO AS REGRAS:
-    let valorUnitario;
-    let faixa;
-    
-
-    const quantidade = registrosSalvos.length + 1;
-
-
-            // FAIXA 1
-        if (quantidade <=20 && tipo == "Estático" && totalAlteracoesCliente <= 2 ){
-            faixa = 1;
-            valorUnitario = 25;
-
-        }else if(quantidade <=20 && tipo == "Carrossel" && totalAlteracoesCliente <= 2 ){
-            valorUnitario = 45;
-            faixa = 1;
-        }else if (quantidade <=20 && tipo == "Estático" && totalAlteracoesCliente >= 3){
-            faixa = 1;
-            valorUnitario = 12.50;
-
-        }else if(quantidade <=20 && tipo == "Carrossel" && totalAlteracoesCliente >= 3){
-            faixa = 1;
-            valorUnitario = 22.50;
-        }
-
-
-        // FAIXA 2
-        else if (quantidade  >= 21 && quantidade <= 60 && tipo == "Estático" && totalAlteracoesCliente <= 2  ){
-            faixa = 2;
-            valorUnitario = 20;
-
-        }else if (quantidade  >= 21 && quantidade <= 60 && tipo == "Carrossel" && totalAlteracoesCliente <= 2 ){
-            faixa = 2;
-            valorUnitario = 40;
-
-        }else if (quantidade  >= 21 && quantidade <= 60 && tipo == "Estático" && totalAlteracoesCliente >= 3){
-            faixa = 2;
-            valorUnitario = 10;
-            
-        }else if(quantidade  >= 21 && quantidade <= 60 && tipo == "Carrossel" && totalAlteracoesCliente >= 3){
-            faixa = 2;
-            valorUnitario = 20;
-        }
-
-
-        // FAIXA 3
-        else if (quantidade >=61 && tipo == "Estático" && totalAlteracoesCliente <= 2 ){
-            faixa = 3;
-            valorUnitario = 15;
-
-        }else if (quantidade >=61 && tipo == "Carrossel" && totalAlteracoesCliente <= 2){
-            faixa = 3;
-            valorUnitario = 35;
-        }else if (quantidade >=61 && tipo == "Estático" && totalAlteracoesCliente >= 3 ){
-            faixa = 3;
-            valorUnitario = 7.50;
-        }
-        else if (quantidade >=61 && tipo == "Carrossel" && totalAlteracoesCliente >= 3 ){
-            faixa = 3;
-            valorUnitario = 17.50;
-        }
-
-    const totalAnterior = calcularTotal(registrosSalvos);
-    const total = totalAnterior + valorUnitario;
+ 
 
         //MESMO QUE TNEHA 20 ALTERAÇÕES AINDA VAI CONTINUAR SENDO APENAS UM REGISTRO NO LOCALSTORAGE
 
@@ -229,31 +256,24 @@ if (!obs) {
         data: dataFormatada,
         cliente,
         tipo,
-        faixa,
-        valorUnitario,
-        alteracaoAtual,
-        totalAlteracoesCliente,
+        alteracoes: alteracaoAtual,
         formatoExtra,
         obs,
   
         
     };
 
-   function calcularTotal(registrosSalvos) {
-    let total = 0;
-
-    for (let i = 0; i < registrosSalvos.length; i++) {
-        total += registrosSalvos[i].valorUnitario;
-    }
-
-    return total;
-}
 
     // Adicionar à tabela
-    adicionarLinhaTabela(registro);
-
-    // Salvar no LocalStorage
     salvarRegistro(registro);
+    carregarRegistros();
+
+    // reset do texto de alteração
+    resetarCampoAlteracao();
+
+
+
+    
 
     // Limpar formulário
     document.getElementById("registroForm").reset();
@@ -274,16 +294,70 @@ function atualizarObservacoes() {
     const cliente = inputCliente.value.trim();
     const tipo = selectTipo.value;
 
-    if (!cliente || !tipo) return;
-
-    const obsEncontrada = buscarObservacoes(cliente, tipo);
-
-    if (obsEncontrada) {
-        textareaObs.value = obsEncontrada;
+    if (!cliente || !tipo) {
+        textareaObs.value = "";
+        return;
     }
+
+    textareaObs.value = buscarObservacoes(cliente, tipo) || "";
 }
 
-inputCliente.addEventListener("blur", atualizarObservacoes);
-selectTipo.addEventListener("change", atualizarObservacoes);
+
+inputCliente.addEventListener("blur", () => {
+    atualizarObservacoes();
+    controlarCampoAlteracao();
+});
+
+selectTipo.addEventListener("change", () => {
+    textareaObs.value = "";
+    atualizarObservacoes();
+    controlarCampoAlteracao();
+});
+
+
+// FUNÇÃO DE SOMA
+function calcularTotalAlteracoes(cliente, tipo) {
+    const registros = JSON.parse(localStorage.getItem("registrosArtes")) || [];
+
+    return registros
+        .filter(r => r.cliente === cliente && r.tipo === tipo)
+        .reduce((total, r) => total + r.alteracoes, 0);
+}
+
+
+function calcularFaixa(totalArtes) {
+    if (totalArtes <= 20) return 1;
+    if (totalArtes <= 60) return 2;
+    return 3;
+}
+
+function valorBase(tipo, faixa) {
+    const tabela = {
+        Estático: [25, 20, 15],
+        Carrossel: [45, 40, 35]
+    };
+    return tabela[tipo][faixa - 1];
+}
+
+function calcularValor(registro, faixaAtual) {
+    let valor = valorBase(registro.tipo, faixaAtual);
+
+    if (registro.alteracoes >= 3) {
+        valor *= 0.5;
+    }
+
+
+    if (registro.formatoExtra === "Sim") {
+        valor *= 1.5;
+    }
+
+    return valor;
+}
+
+controlarCampoAlteracao();
+
+
+// localStorage.clear();
+// localStorage.removeItem("registrosArtes");
 
 
