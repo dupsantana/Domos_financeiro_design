@@ -5,17 +5,16 @@
 @import url(./fonts.css);
 
 * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: Poppins-Regular;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: Poppins-Regular;
 }
 
 body {
-    background: #f5f5f7;
-    color: #333;
-    padding: 20px;
-    
+  background: #f5f5f7;
+  color: #333;
+  padding: 20px;
 }
 
 /* ================================
@@ -23,121 +22,118 @@ body {
 =================================== */
 
 .header {
-    text-align: center;
-    padding: 20px 0;
-    margin-bottom: 25px;
+  text-align: center;
+  padding: 20px 0;
+  margin-bottom: 25px;
 }
 
 .header h1 {
-    font-size: 26px;
-    font-weight: 600;
-    color: #5e3ea1; /* Roxo suave */
-    font-family: Montserrat;
+  font-size: 26px;
+  font-weight: 600;
+  color: #5e3ea1; /* Roxo suave */
+  font-family: Montserrat;
 }
-
 
 /* ================================
    TEXTO EXPLICATIVO ALTERAÇÃO
 =================================== */
 .info-alteracao {
-    display: none;
-    font-size: 12px;
-    color: #a00;
-    margin-top: 4px;
+  display: none;
+  font-size: 12px;
+  color: #a00;
+  margin-top: 4px;
 }
 
 input:disabled {
-    background-color: #f2f2f2;
-    cursor: not-allowed;
+  background-color: #f2f2f2;
+  cursor: not-allowed;
 }
-
 
 /* ================================
    FORMULÁRIO
 =================================== */
 
 .container {
-    max-width: 1200px;
-    margin: 0 auto;
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
 .formulario {
-    background: #ffffff;
-    padding: 20px;
-    border-radius: 12px;
-    box-shadow: 0px 4px 14px rgba(0,0,0,0.06);
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 18px;
-    margin-bottom: 35px;
+  background: #ffffff;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0px 4px 14px rgba(0, 0, 0, 0.06);
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 18px;
+  margin-bottom: 35px;
 }
 
 .campo {
-    display: flex;
-    flex-direction: column;
+  display: flex;
+  flex-direction: column;
 }
 
 .campo label {
-    font-size: 14px;
-    font-weight: 500;
-    margin-bottom: 6px;
-    color: #444;
+  font-size: 14px;
+  font-weight: 500;
+  margin-bottom: 6px;
+  color: #444;
 }
 
 .campo input,
 .campo select,
 .campo textarea {
-    padding: 10px 12px;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    font-size: 14px;
-    transition: all 0.2s ease;
-    background: #fafafa;
+  padding: 10px 12px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 14px;
+  transition: all 0.2s ease;
+  background: #fafafa;
 }
 
 .campo input:focus,
 .campo select:focus,
 .campo textarea:focus {
-    border-color: #7447c6;
-    background: #fff;
-    box-shadow: 0 0 0 2px rgba(116, 71, 198, 0.2);
+  border-color: #7447c6;
+  background: #fff;
+  box-shadow: 0 0 0 2px rgba(116, 71, 198, 0.2);
 }
 
 .campo-longo {
-    grid-column: span 2;
+  grid-column: span 2;
 }
 
 .campo textarea {
-    height: 40px;
-    min-height: 40px;
-    resize: vertical;
+  height: 40px;
+  min-height: 40px;
+  resize: vertical;
 }
 
-
 .acoes-topo {
-    max-width: 1200px;
-    margin: 0 auto 10px auto;
-    display: flex;
-    justify-content: flex-end;
+  max-width: 1200px;
+  margin: 0 auto 10px auto;
+  display: flex;
+  justify-content: flex-end;
 }
 
 .btn-exportar {
-    padding: 10px 16px;
-    background: #7447c6;
-    color: #fff;
-    border: none;
-    border-radius: 10px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: background 0.2s ease;
+  padding: 10px 16px;
+  background: #7447c6;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease;
 }
 
 .btn-exportar:hover {
-    background: #5e3ea1;
+  background: #5e3ea1;
 }
 
-.img{
-    width: 20px;
+.img {
+  width: 20px;
 }
 
 /* ================================
@@ -145,21 +141,20 @@ input:disabled {
 =================================== */
 
 .btn {
-       
-    padding: 12px;
-    background: #7447c6;
-    border: none;
-    color: #fff;
-    font-weight: 600;
-    font-size: 15px;
-    border-radius: 10px;
-    cursor: pointer;
-    transition: background 0.2s ease;
-    font-family: Montserrat;
+  padding: 12px;
+  background: #7447c6;
+  border: none;
+  color: #fff;
+  font-weight: 600;
+  font-size: 15px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+  font-family: Montserrat;
 }
 
 .btn:hover {
-    background: #5e3ea1;
+  background: #5e3ea1;
 }
 
 /* ================================
@@ -167,42 +162,42 @@ input:disabled {
 =================================== */
 
 .titulo-tabela {
-    font-size: 22px;
-    font-weight: 600;
-    color: #5e3ea1;
-    margin-bottom: 12px;
+  font-size: 22px;
+  font-weight: 600;
+  color: #5e3ea1;
+  margin-bottom: 12px;
 }
 
 table {
-    width: 100%;
-    border-collapse: collapse;
-    background: #ffffff;
-    border-radius: 12px;
-    overflow: hidden;
-    box-shadow: 0px 4px 14px rgba(0,0,0,0.06);
+  width: 100%;
+  border-collapse: collapse;
+  background: #ffffff;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0px 4px 14px rgba(0, 0, 0, 0.06);
 }
 
 table th {
-    background: #ece6f7;
-    padding: 12px;
-    text-align: left;
-    font-size: 14px;
-    font-weight: 600;
-    color: #4a2f80;
+  background: #ece6f7;
+  padding: 12px;
+  text-align: left;
+  font-size: 14px;
+  font-weight: 600;
+  color: #4a2f80;
 }
 
 table td {
-    padding: 10px;
-    border-bottom: 1px solid #eee;
-    font-size: 14px;
+  padding: 10px;
+  border-bottom: 1px solid #eee;
+  font-size: 14px;
 }
 
 table tr:nth-child(even) {
-    background: #faf9ff;
+  background: #faf9ff;
 }
 
 table tr:hover {
-    background: #f2ecfc;
+  background: #f2ecfc;
 }
 
 /* ================================
@@ -210,11 +205,161 @@ table tr:hover {
 =================================== */
 
 @media (max-width: 700px) {
-    .campo-longo {
-        grid-column: span 1;
-    }
-    
-    .btn {
-        grid-column: span 1;
-    }
+  .campo-longo {
+    grid-column: span 1;
+  }
+
+  .btn {
+    grid-column: span 1;
+  }
+}
+
+/* COLUNA REMOVER */
+.col-remover {
+  width: 30px;
+  text-align: center;
+}
+
+.btn-remover {
+  color: rgb(97, 7, 128);
+  font-weight: bold;
+  font-size: 20px;
+  cursor: pointer;
+  font-family: Montserrat;
+}
+
+.btn-remover:hover {
+  color: rgb(151, 5, 5);
+}
+
+/* Alerta de exclusão */
+.alerta-exclusao {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background: #d32f2f;
+  color: #fff;
+  padding: 14px 18px;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 14px;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  transform: translateY(10px);
+  z-index: 9999;
+}
+
+.alerta-exclusao.mostrar {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ===============================
+   DASHBOARD
+================================= */
+
+.dashboard-container {
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 20px;
+  margin: 25px 0;
+  display: flex;
+  gap: 20px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+}
+
+.dashboard-card {
+  flex: 1;
+  background: #f6f2fb;
+  border-radius: 10px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.dashboard-label {
+  font-size: 14px;
+  color: #6a4bbd;
+  margin-bottom: 8px;
+  font-weight: 500;
+}
+
+.dashboard-value {
+  font-size: 32px;
+  font-weight: bold;
+  color: #4b2ca3;
+}
+
+.valor-placeholder {
+  opacity: 0.8;
+}
+
+/* Responsivo */
+@media (max-width: 768px) {
+  .dashboard-container {
+    flex-direction: column;
+  }
+}
+
+/* ===============================
+   FILTROS ESTILO EXCEL
+=============================== */
+
+.filtro-btn {
+  margin-left: 6px;
+  cursor: pointer;
+  font-size: 12px;
+  opacity: 0.6;
+}
+
+.filtro-btn:hover {
+  opacity: 1;
+}
+
+.filtro-box {
+  position: absolute;
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  padding: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  min-width: 180px;
+}
+
+.filtro-box label {
+  display: block;
+  font-size: 13px;
+  margin-bottom: 4px;
+  cursor: pointer;
+}
+
+.filtro-acoes {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 8px;
+}
+
+.filtro-acoes button {
+  border: none;
+  background: #eee;
+  padding: 4px 8px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.filtro-acoes button:hover {
+  background: #ddd;
+}
+
+th .th-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  white-space: nowrap;
 }

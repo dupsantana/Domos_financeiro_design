@@ -1,102 +1,166 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-<head>
+  <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Registro de Artes - Domos Company</title>
     <link rel="stylesheet" href="./src/css/styles.css" />
     <link rel="stylesheet" href="./src/css/fonts.css" />
-</head>
+  </head>
 
-<body>
+  <div id="alertaExclusao" class="alerta-exclusao">
+    A linha foi excluída do registro
+  </div>
+
+  <body>
     <header class="header">
-        <h1>Domos Company — Registro de Artes</h1>
+      <h1>Domos Company — Registro de Artes</h1>
     </header>
 
     <main class="container">
-       <div class="acoes-topo">
-            <button type="button" id="btnExportar" class="btn-exportar">
-                <img class="img" src="./src/icons/download_17783271.png" alt="">
-            </button>
+      <div class="acoes-topo">
+        <button type="button" id="btnExportar" class="btn-exportar">
+          <img class="img" src="./src/icons/download_17783271.png" alt="" />
+        </button>
+      </div>
+
+      <form id="registroForm" class="formulario">
+        <div class="campo">
+          <label>Data</label>
+          <input type="date" id="data" required />
         </div>
 
+        <div class="campo">
+          <label>Cliente / Projeto</label>
+          <input
+            type="text"
+            id="cliente"
+            placeholder="Ex: Projeto X"
+            required
+          />
+        </div>
 
-        <form id="registroForm" class="formulario">
+        <div class="campo">
+          <label>Tipo</label>
+          <select id="tipo" required>
+            <option value="">Selecione...</option>
+            <option value="Estático">Estático</option>
+            <option value="Carrossel">Carrossel</option>
+          </select>
+        </div>
 
-            <div class="campo">
-                <label>Data</label>
-                <input type="date" id="data" required />
-            </div>
+        <div class="campo">
+          <label>Teve Alteração ?</label>
+          <select id="alteracao">
+            <option value="0">Não</option>
+            <option value="1">Sim</option>
+          </select>
+          <small id="alteracaoInfo" class="info-alteracao">
+            O primeiro registro deste cliente/projeto não pode ter alterações.
+          </small>
+        </div>
 
-            <div class="campo">
-                <label>Cliente / Projeto</label>
-                <input type="text" id="cliente" placeholder="Ex: Projeto X" required />
-            </div>
+        <div class="campo">
+          <label>Tem formato extra?</label>
+          <select id="formatoExtra">
+            <option value="Não">Não</option>
+            <option value="Sim">Sim</option>
+          </select>
+        </div>
 
-            <div class="campo">
-                <label>Tipo</label>
-                <select id="tipo" required>
-                    <option value="">Selecione...</option>
-                    <option value="Estático">Estático</option>
-                    <option value="Carrossel">Carrossel</option>
-                </select>
-            </div>
+        <div class="campo campo-longo">
+          <label>Observações</label>
+          <textarea
+            id="obs"
+            placeholder="Digite observações adicionais"
+          ></textarea>
+        </div>
 
-            <div class="campo">
-                <label>Teve Alteração ?</label>
-                <select id="alteracao">
-                    <option value="0">Não</option>
-                    <option value="1">Sim</option>
-            </select>
-            <small id="alteracaoInfo" class="info-alteracao">
-    O primeiro registro deste cliente/projeto não pode ter alterações.
-</small>
+        <button type="submit" class="btn">Adicionar Registro</button>
+      </form>
 
-            </div>
+      <div class="dashboard-container">
+        <div class="dashboard-card">
+          <span class="dashboard-label">Total de Registros</span>
+          <span class="dashboard-value" id="totalRegistros">0</span>
+        </div>
 
-            <div class="campo">
-                <label>Tem formato extra?</label>
-                <select id="formatoExtra">
-                    <option value="Não">Não</option>
-                    <option value="Sim">Sim</option>
-                </select>
-            </div>
+        <div class="dashboard-card">
+          <span class="dashboard-label">Valor Total</span>
+          <span class="dashboard-value valor-placeholder" id="valorTotal"
+            >R$ 0,00</span
+          >
+        </div>
+      </div>
 
-            
+      <table id="tabelaRegistros">
+        <thead>
+          <tr>
+            <th></th>
 
-            <div class="campo campo-longo">
-                <label>Observações</label>
-                <textarea id="obs" placeholder="Digite observações adicionais"></textarea>
-            </div>
+            <th data-col="data">
+              <div class="th-content">
+                Data
+                <span class="filtro-btn">▼</span>
+              </div>
+            </th>
 
-            <button type="submit" class="btn">Adicionar Registro</button>
+            <th data-col="cliente">
+              <div class="th-content">
+                Cliente/Projeto
+                <span class="filtro-btn">▼</span>
+              </div>
+            </th>
 
-        </form>
+            <th data-col="tipo">
+              <div class="th-content">
+                Tipo
+                <span class="filtro-btn">▼</span>
+              </div>
+            </th>
 
-        <h2 class="titulo-tabela">Registros</h2>
+            <th data-col="faixa">
+              <div class="th-content">
+                Faixa
+                <span class="filtro-btn">▼</span>
+              </div>
+            </th>
 
-        <table id="tabelaRegistros">
-            <thead>
-                <tr>
-                    <th>Data</th>
-                    <th>Cliente/Projeto</th>
-                    <th>Tipo</th>
-                    <th>Faixa</th>
-                    <th>Valor Unitário</th>
-                    <th>Alterações</th>
-                    <th>Formato Extra</th>
-                    <th>Observações</th>
-                </tr>
-            </thead>
-            <tbody>
-                <!-- registros aparecem aqui -->
-            </tbody>
-        </table>
+            <th data-col="valor">
+              <div class="th-content">
+                Valor Unitário
+                <span class="filtro-btn">▼</span>
+              </div>
+            </th>
 
+            <th data-col="alteracoes">
+              <div class="th-content">
+                Alterações
+                <span class="filtro-btn">▼</span>
+              </div>
+            </th>
+
+            <th data-col="formato">
+              <div class="th-content">
+                Formato Extra
+                <span class="filtro-btn">▼</span>
+              </div>
+            </th>
+
+            <th data-col="obs">
+              <div class="th-content">
+                Observações
+                <span class="filtro-btn">▼</span>
+              </div>
+            </th>
+          </tr>
+        </thead>
+
+        <tbody></tbody>
+      </table>
     </main>
 
-<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
-<script src="app.js"></script>
-
-</body>
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+    <script src="app.js"></script>
+  </body>
 </html>
