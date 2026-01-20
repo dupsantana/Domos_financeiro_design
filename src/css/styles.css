@@ -1,8 +1,12 @@
-/* ================================
-   ESTILO GERAL
-=================================== */
+/* ======================================================
+   IMPORTAÇÃO DE FONTES
+====================================================== */
 
 @import url(./fonts.css);
+
+/* ======================================================
+   RESET GLOBAL E BODY
+====================================================== */
 
 * {
   margin: 0;
@@ -17,9 +21,9 @@ body {
   padding: 20px;
 }
 
-/* ================================
+/* ======================================================
    CABEÇALHO
-=================================== */
+====================================================== */
 
 .header {
   text-align: center;
@@ -30,13 +34,14 @@ body {
 .header h1 {
   font-size: 26px;
   font-weight: 600;
-  color: #5e3ea1; /* Roxo suave */
+  color: #5e3ea1;
   font-family: Montserrat;
 }
 
-/* ================================
-   TEXTO EXPLICATIVO ALTERAÇÃO
-=================================== */
+/* ======================================================
+   TEXTO AUXILIAR / ESTADOS DE INPUT
+====================================================== */
+
 .info-alteracao {
   display: none;
   font-size: 12px;
@@ -49,14 +54,18 @@ input:disabled {
   cursor: not-allowed;
 }
 
-/* ================================
-   FORMULÁRIO
-=================================== */
+/* ======================================================
+   CONTAINER PADRÃO
+====================================================== */
 
 .container {
   max-width: 1200px;
   margin: 0 auto;
 }
+
+/* ======================================================
+   FORMULÁRIO
+====================================================== */
 
 .formulario {
   background: #ffffff;
@@ -100,6 +109,7 @@ input:disabled {
   box-shadow: 0 0 0 2px rgba(116, 71, 198, 0.2);
 }
 
+/* Campo que ocupa duas colunas */
 .campo-longo {
   grid-column: span 2;
 }
@@ -109,6 +119,10 @@ input:disabled {
   min-height: 40px;
   resize: vertical;
 }
+
+/* ======================================================
+   AÇÕES DO TOPO (EXPORTAR)
+====================================================== */
 
 .acoes-topo {
   max-width: 1200px;
@@ -136,9 +150,9 @@ input:disabled {
   width: 20px;
 }
 
-/* ================================
-   BOTÃO
-=================================== */
+/* ======================================================
+   BOTÕES PADRÃO
+====================================================== */
 
 .btn {
   padding: 12px;
@@ -157,9 +171,9 @@ input:disabled {
   background: #5e3ea1;
 }
 
-/* ================================
+/* ======================================================
    TABELA
-=================================== */
+====================================================== */
 
 .titulo-tabela {
   font-size: 22px;
@@ -200,21 +214,10 @@ table tr:hover {
   background: #f2ecfc;
 }
 
-/* ================================
-   RESPONSIVIDADE
-=================================== */
+/* ======================================================
+   COLUNA DE REMOÇÃO
+====================================================== */
 
-@media (max-width: 700px) {
-  .campo-longo {
-    grid-column: span 1;
-  }
-
-  .btn {
-    grid-column: span 1;
-  }
-}
-
-/* COLUNA REMOVER */
 .col-remover {
   width: 30px;
   text-align: center;
@@ -232,7 +235,10 @@ table tr:hover {
   color: rgb(151, 5, 5);
 }
 
-/* Alerta de exclusão */
+/* ======================================================
+   ALERTA DE EXCLUSÃO
+====================================================== */
+
 .alerta-exclusao {
   position: fixed;
   bottom: 20px;
@@ -256,9 +262,9 @@ table tr:hover {
   transform: translateY(0);
 }
 
-/* ===============================
+/* ======================================================
    DASHBOARD
-================================= */
+====================================================== */
 
 .dashboard-container {
   background: #ffffff;
@@ -297,16 +303,9 @@ table tr:hover {
   opacity: 0.8;
 }
 
-/* Responsivo */
-@media (max-width: 768px) {
-  .dashboard-container {
-    flex-direction: column;
-  }
-}
-
-/* ===============================
-   FILTROS ESTILO EXCEL
-=============================== */
+/* ======================================================
+   FILTROS (ESTILO EXCEL)
+====================================================== */
 
 .filtro-btn {
   margin-left: 6px;
@@ -356,6 +355,7 @@ table tr:hover {
   background: #ddd;
 }
 
+/* Conteúdo do TH (texto + ícone) */
 th .th-content {
   display: flex;
   align-items: center;
@@ -363,3 +363,24 @@ th .th-content {
   gap: 6px;
   white-space: nowrap;
 }
+
+/* ======================================================
+   RESPONSIVIDADE
+====================================================== */
+
+@media (max-width: 700px) {
+  .campo-longo {
+    grid-column: span 1;
+  }
+
+  .btn {
+    grid-column: span 1;
+  }
+}
+
+@media (max-width: 768px) {
+  .dashboard-container {
+    flex-direction: column;
+  }
+}
+

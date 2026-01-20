@@ -1,16 +1,24 @@
+/* =========================================================
+   ESTADO GLOBAL
+   Controla filtros ativos da tabela (estilo Excel)
+========================================================= */
 const filtrosAtivos = {};
 
-// ===============================
-// UTIL: Formatar data para DD/MM/YYYY
-// ===============================
+/* =========================================================
+   UTILITÁRIOS
+========================================================= */
+
+/**
+ * Converte data ISO (YYYY-MM-DD) para formato brasileiro
+ */
 function formatarDataBr(dataISO) {
   const partes = dataISO.split("-");
   return `${partes[2]}/${partes[1]}/${partes[0]}`;
 }
 
-// ===============================
-// BUSCAR OBSERVAÇÕES
-// ===============================
+/**
+ * Busca a última observação registrada para um cliente + tipo
+ */
 function buscarObservacoes(cliente, tipo) {
   const registros = JSON.parse(localStorage.getItem("registrosArtes")) || [];
 
@@ -26,9 +34,9 @@ function buscarObservacoes(cliente, tipo) {
   return "";
 }
 
-// ===============================
-// EXPORTAR XLSX
-// ===============================
+/* =========================================================
+   EXPORTAÇÃO XLSX
+========================================================= */
 document.getElementById("btnExportar").addEventListener("click", function () {
   const registros = JSON.parse(localStorage.getItem("registrosArtes")) || [];
 
@@ -70,12 +78,13 @@ document.getElementById("btnExportar").addEventListener("click", function () {
   XLSX.writeFile(workbook, `registros_artes_${hoje}.xlsx`);
 });
 
-// ===============================
-// CARREGAR REGISTROS
-// ===============================
+/* =========================================================
+   CARREGAMENTO PRINCIPAL DA TABELA
+========================================================= */
 function carregarRegistros() {
   const registros = JSON.parse(localStorage.getItem("registrosArtes")) || [];
   const tbody = document.querySelector("#tabelaRegistros tbody");
+
   tbody.innerHTML = "";
 
   registros.forEach((registro, index) => {
@@ -86,24 +95,25 @@ function carregarRegistros() {
   atualizarValorTotal();
 }
 
-// ===============================
-// DASHBOARD - CONTADOR DE REGISTROS
-// ===============================
+/* =========================================================
+   DASHBOARD
+========================================================= */
+
+/**
+ * Atualiza contador total de registros
+ */
 function atualizarContadorRegistros() {
   const registros = JSON.parse(localStorage.getItem("registrosArtes")) || [];
   const contador = document.getElementById("totalRegistros");
 
-  if (contador) {
-    contador.innerText = registros.length;
-  }
+  if (contador) contador.innerText = registros.length;
 }
 
-// ===============================
-// DASHBOARD - VALOR TOTAL
-// ===============================
+/**
+ * Calcula valor total geral
+ */
 function calcularValorTotal() {
   const registros = JSON.parse(localStorage.getItem("registrosArtes")) || [];
-
   if (registros.length === 0) return 0;
 
   const faixaAtual = calcularFaixa(registros.length);
@@ -115,31 +125,28 @@ function calcularValorTotal() {
       registro.tipo
     );
 
-    const valor = calcularValor(
+    total += calcularValor(
       { ...registro, alteracoes: totalAlteracoes },
       faixaAtual
     );
-
-    total += valor;
   });
 
   return total;
 }
 
-// ===============================
-// Atualiza o valor
-// ===============================
+/**
+ * Atualiza valor total exibido no dashboard
+ */
 function atualizarValorTotal() {
   const elValor = document.getElementById("valorTotal");
   if (!elValor) return;
 
-  const total = calcularValorTotal();
-  elValor.innerText = `R$ ${total.toFixed(2)}`;
+  elValor.innerText = `R$ ${calcularValorTotal().toFixed(2)}`;
 }
 
-// ===============================
-// REMOVER REGISTRO
-// ===============================
+/* =========================================================
+   REMOÇÃO DE REGISTROS
+========================================================= */
 function removerRegistro(indice) {
   const registros = JSON.parse(localStorage.getItem("registrosArtes")) || [];
   registros.splice(indice, 1);
@@ -149,9 +156,9 @@ function removerRegistro(indice) {
   mostrarAlertaExclusao();
 }
 
-// ===============================
-// ALERTA DE EXCLUSÃO
-// ===============================
+/**
+ * Alerta visual ao excluir registro
+ */
 function mostrarAlertaExclusao() {
   const alerta = document.getElementById("alertaExclusao");
 
@@ -162,14 +169,17 @@ function mostrarAlertaExclusao() {
   }, 2500);
 }
 
-// ===============================
-// ABRIR FILTRO AO CLICAR NO ÍCONE
-// ===============================
+/* =========================================================
+   FILTROS (ESTILO EXCEL)
+========================================================= */
+
+/**
+ * Inicializa evento dos ícones de filtro no cabeçalho
+ */
 document.addEventListener("DOMContentLoaded", () => {
   document.querySelectorAll(".filtro-btn").forEach((btn) => {
     btn.addEventListener("click", function (e) {
       e.stopPropagation();
-
       removerFiltrosAbertos();
 
       const th = this.closest("th");
@@ -181,9 +191,9 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 });
 
-// ===============================
-// CRIAR DROPDOWN DE FILTRO
-// ===============================
+/**
+ * Cria dropdown de filtro com valores únicos da coluna
+ */
 function criarFiltro(th, coluna, indexColuna) {
   const valores = new Set();
 
@@ -195,22 +205,18 @@ function criarFiltro(th, coluna, indexColuna) {
   const box = document.createElement("div");
   box.className = "filtro-box";
 
-  box.addEventListener("click", (e) => {
-    e.stopPropagation();
-  });
+  box.addEventListener("click", (e) => e.stopPropagation());
 
   valores.forEach((valor) => {
     const checked =
       !filtrosAtivos[coluna] || filtrosAtivos[coluna].includes(valor);
 
     box.innerHTML += `
-            <label>
-                <input type="checkbox" value="${valor}" ${
-      checked ? "checked" : ""
-    }>
-                ${valor}
-            </label>
-        `;
+      <label>
+        <input type="checkbox" value="${valor}" ${checked ? "checked" : ""}>
+        ${valor}
+      </label>
+    `;
   });
 
   const acoes = document.createElement("div");
@@ -218,15 +224,13 @@ function criarFiltro(th, coluna, indexColuna) {
 
   const btnAplicar = document.createElement("button");
   btnAplicar.innerText = "Aplicar";
-  btnAplicar.addEventListener("click", () => {
-    aplicarFiltro(coluna, indexColuna, btnAplicar);
-  });
+  btnAplicar.addEventListener("click", () =>
+    aplicarFiltro(coluna, indexColuna, btnAplicar)
+  );
 
   const btnLimpar = document.createElement("button");
   btnLimpar.innerText = "Limpar";
-  btnLimpar.addEventListener("click", () => {
-    limparFiltro(coluna);
-  });
+  btnLimpar.addEventListener("click", () => limparFiltro(coluna));
 
   acoes.appendChild(btnAplicar);
   acoes.appendChild(btnLimpar);
@@ -239,9 +243,9 @@ function criarFiltro(th, coluna, indexColuna) {
   box.style.left = rect.left + window.scrollX + "px";
 }
 
-// ===============================
-// APLICAR FILTRO
-// ===============================
+/**
+ * Aplica filtro selecionado
+ */
 function aplicarFiltro(coluna, indexColuna, btn) {
   const box = btn.closest(".filtro-box");
   const checks = box.querySelectorAll("input[type=checkbox]:checked");
@@ -251,18 +255,19 @@ function aplicarFiltro(coluna, indexColuna, btn) {
   aplicarFiltrosTabela();
   removerFiltrosAbertos();
 }
-// ===============================
-// LIMPAR FILTRO
-// ===============================
+
+/**
+ * Limpa filtro de uma coluna
+ */
 function limparFiltro(coluna) {
   delete filtrosAtivos[coluna];
   aplicarFiltrosTabela();
   removerFiltrosAbertos();
 }
 
-// ===============================
-// APLICAR TODOS OS FILTROS ATIVOS
-// ===============================
+/**
+ * Aplica todos os filtros ativos na tabela
+ */
 function aplicarFiltrosTabela() {
   document.querySelectorAll("#tabelaRegistros tbody tr").forEach((tr) => {
     let visivel = true;
@@ -281,9 +286,9 @@ function aplicarFiltrosTabela() {
   atualizarDashboardFiltrado();
 }
 
-// ===============================
-// ATUALIZAR DASHBOARD FILTRADO
-// ===============================
+/**
+ * Atualiza dashboard considerando filtros ativos
+ */
 function atualizarDashboardFiltrado() {
   const linhasVisiveis = Array.from(
     document.querySelectorAll("#tabelaRegistros tbody tr")
@@ -293,35 +298,31 @@ function atualizarDashboardFiltrado() {
 
   let total = 0;
   linhasVisiveis.forEach((tr) => {
-    const valorTexto = tr.children[5].innerText
-      .replace("R$", "")
-      .replace(",", ".")
-      .trim();
-
-    total += Number(valorTexto);
+    total += Number(
+      tr.children[5].innerText.replace("R$", "").replace(",", ".").trim()
+    );
   });
 
   document.getElementById("valorTotal").innerText = `R$ ${total.toFixed(2)}`;
 }
 
-// ===============================
-// FECHAR FILTROS AO CLICAR FORA
-// ===============================
+/**
+ * Fecha filtros ao clicar fora
+ */
 function removerFiltrosAbertos() {
   document.querySelectorAll(".filtro-box").forEach((f) => f.remove());
 }
 
 document.addEventListener("click", removerFiltrosAbertos);
 
-// ===============================
-// ADICIONAR LINHA NA TABELA
-// ===============================
+/* =========================================================
+   TABELA
+========================================================= */
 function adicionarLinhaTabela(registro, indice, totalRegistros) {
   const tabela = document.querySelector("#tabelaRegistros tbody");
   const tr = document.createElement("tr");
 
   const faixaAtual = calcularFaixa(totalRegistros);
-
   const totalAlteracoes = calcularTotalAlteracoes(
     registro.cliente,
     registro.tipo
@@ -333,33 +334,31 @@ function adicionarLinhaTabela(registro, indice, totalRegistros) {
   );
 
   tr.innerHTML = `
-        <td class="col-remover">
-            <span class="btn-remover" onclick="removerRegistro(${indice})">x</span>
-        </td>
-        <td>${registro.data}</td>
-        <td>${registro.cliente}</td>
-        <td>${registro.tipo}</td>
-        <td>${faixaAtual}</td>
-        <td>R$ ${valor.toFixed(2)}</td>
-        <td>${totalAlteracoes}</td>
-        <td>${registro.formatoExtra}</td>
-        <td>${registro.obs}</td>
-    `;
+    <td class="col-remover">
+      <span class="btn-remover" onclick="removerRegistro(${indice})">x</span>
+    </td>
+    <td>${registro.data}</td>
+    <td>${registro.cliente}</td>
+    <td>${registro.tipo}</td>
+    <td>${faixaAtual}</td>
+    <td>R$ ${valor.toFixed(2)}</td>
+    <td>${totalAlteracoes}</td>
+    <td>${registro.formatoExtra}</td>
+    <td>${registro.obs}</td>
+  `;
 
   tabela.appendChild(tr);
 }
 
-// ===============================
-// PRIMEIRO REGISTRO SEM ALTERAÇÃO
-// ===============================
+/* =========================================================
+   FORMULÁRIO
+========================================================= */
+
 function isPrimeiroRegistro(cliente, tipo) {
   const registros = JSON.parse(localStorage.getItem("registrosArtes")) || [];
   return !registros.some((r) => r.cliente === cliente && r.tipo === tipo);
 }
 
-// ===============================
-// CONTROLE CAMPO ALTERAÇÃO
-// ===============================
 function controlarCampoAlteracao() {
   const cliente = inputCliente.value.trim();
   const tipo = selectTipo.value;
@@ -379,74 +378,49 @@ function controlarCampoAlteracao() {
 function resetarCampoAlteracao() {
   const inputAlteracao = document.getElementById("alteracao");
   const info = document.getElementById("alteracaoInfo");
+
   inputAlteracao.value = 0;
   inputAlteracao.disabled = true;
   info.style.display = "none";
 }
 
-// ===============================
-// SALVAR REGISTRO
-// ===============================
 function salvarRegistro(registro) {
   const registros = JSON.parse(localStorage.getItem("registrosArtes")) || [];
   registros.push(registro);
   localStorage.setItem("registrosArtes", JSON.stringify(registros));
 }
 
-// ===============================
-// SUBMIT FORM
-// ===============================
 document
   .getElementById("registroForm")
   .addEventListener("submit", function (e) {
     e.preventDefault();
 
-    const data = document.getElementById("data").value;
     const cliente = document.getElementById("cliente").value;
     const tipo = document.getElementById("tipo").value;
 
     let alteracaoAtual = Number(document.getElementById("alteracao").value);
     if (isPrimeiroRegistro(cliente, tipo)) alteracaoAtual = 0;
 
-    const formatoExtra = document.getElementById("formatoExtra").value;
     let obs = document.getElementById("obs").value.trim();
     if (!obs) obs = buscarObservacoes(cliente, tipo);
 
-    const registro = {
-      data: formatarDataBr(data),
+    salvarRegistro({
+      data: formatarDataBr(document.getElementById("data").value),
       cliente,
       tipo,
       alteracoes: alteracaoAtual,
-      formatoExtra,
+      formatoExtra: document.getElementById("formatoExtra").value,
       obs,
-    };
+    });
 
-    salvarRegistro(registro);
     carregarRegistros();
     resetarCampoAlteracao();
-    document.getElementById("registroForm").reset();
+    this.reset();
   });
 
-// ===============================
-carregarRegistros();
-
-const inputCliente = document.getElementById("cliente");
-const selectTipo = document.getElementById("tipo");
-const textareaObs = document.getElementById("obs");
-
-inputCliente.addEventListener("blur", () => {
-  textareaObs.value = buscarObservacoes(inputCliente.value, selectTipo.value);
-  controlarCampoAlteracao();
-});
-
-selectTipo.addEventListener("change", () => {
-  textareaObs.value = "";
-  controlarCampoAlteracao();
-});
-
-// ===============================
-// REGRAS DE CÁLCULO
-// ===============================
+/* =========================================================
+   REGRAS DE CÁLCULO
+========================================================= */
 function calcularTotalAlteracoes(cliente, tipo) {
   const registros = JSON.parse(localStorage.getItem("registrosArtes")) || [];
   return registros
@@ -475,5 +449,21 @@ function calcularValor(registro, faixa) {
   return valor;
 }
 
-// localStorage.clear();
-// localStorage.removeItem("registrosArtes");
+/* =========================================================
+   INICIALIZAÇÃO
+========================================================= */
+carregarRegistros();
+
+const inputCliente = document.getElementById("cliente");
+const selectTipo = document.getElementById("tipo");
+const textareaObs = document.getElementById("obs");
+
+inputCliente.addEventListener("blur", () => {
+  textareaObs.value = buscarObservacoes(inputCliente.value, selectTipo.value);
+  controlarCampoAlteracao();
+});
+
+selectTipo.addEventListener("change", () => {
+  textareaObs.value = "";
+  controlarCampoAlteracao();
+});
