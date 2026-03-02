@@ -435,11 +435,22 @@ function calcularFaixa(total) {
 }
 
 function valorBase(tipo, faixa) {
-  const tabela = {
-    Estático: [25, 20, 15],
-    Carrossel: [45, 40, 35],
-  };
-  return tabela[tipo][faixa - 1];
+  const baseEstatico = [25, 20, 15];
+  const baseCarrossel = [45, 40, 35];
+
+  if (tipo === "Feed" || tipo === "Story") {
+    return baseEstatico[faixa - 1];
+  }
+
+  if (tipo === "Carrossel") {
+    return baseCarrossel[faixa - 1];
+  }
+
+  if (tipo === "Artigo" || tipo === "Criativo") {
+    return baseEstatico[faixa - 1] * 1.5;
+  }
+
+  return 0;
 }
 
 function calcularValor(registro, faixa) {
