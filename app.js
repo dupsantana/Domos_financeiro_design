@@ -435,23 +435,17 @@ function calcularFaixa(total) {
 }
 
 function valorBase(tipo, faixa) {
-  const baseEstatico = [25, 20, 15];
-  const baseCarrossel = [45, 40, 35];
+  const valores = {
+    Feed: [30, 25, 20],
+    Story: [30, 25, 20],
+    Carrossel: [55, 50, 45],
+    Artigo: [45, 37.5, 30],
+    Criativo: [45, 37.5, 30],
+  };
 
-  if (tipo === "Feed" || tipo === "Story") {
-    return baseEstatico[faixa - 1];
-  }
-
-  if (tipo === "Carrossel") {
-    return baseCarrossel[faixa - 1];
-  }
-
-  if (tipo === "Artigo" || tipo === "Criativo") {
-    return baseEstatico[faixa - 1] * 1.5;
-  }
-
-  return 0;
+  return valores[tipo] ? valores[tipo][faixa - 1] : 0;
 }
+
 
 function calcularValor(registro, faixa) {
   let valor = valorBase(registro.tipo, faixa);
@@ -459,6 +453,7 @@ function calcularValor(registro, faixa) {
   if (registro.formatoExtra === "Sim") valor *= 1.5;
   return valor;
 }
+
 
 /* =========================================================
    INICIALIZAÇÃO
@@ -477,4 +472,23 @@ inputCliente.addEventListener("blur", () => {
 selectTipo.addEventListener("change", () => {
   textareaObs.value = "";
   controlarCampoAlteracao();
+});
+
+
+document.addEventListener("DOMContentLoaded", () => {
+  const btn = document.getElementById("btnLimparRegistros");
+
+  if (!btn) return;
+
+  btn.addEventListener("click", function () {
+    const confirmar = confirm(
+      "Você tem certeza que quer excluir todos os registros?"
+    );
+
+    if (!confirmar) return;
+
+    localStorage.removeItem("registrosArtes");
+
+    carregarRegistros();
+  });
 });

@@ -384,3 +384,29 @@ th .th-content {
   }
 }
 
+/* ======================================================
+   BOTÃO DE LIMPAR REGISTROS 
+====================================================== */
+
+.btn-limpar {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  padding: 10px 16px;
+  background: #7447c6;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  box-shadow: 0px 4px 14px rgba(0, 0, 0, 0.15);
+  transition: background 0.2s ease;
+  z-index: 9999;
+}
+
+.btn-limpar:hover {
+  background: #5e3ea1;
+}
+
+.btn-limpar img {
+  width: 20px;
+}
+
